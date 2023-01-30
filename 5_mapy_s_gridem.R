@@ -1,24 +1,21 @@
 ### Vyjadreni kontinualnich a diskretnich dat v gridove siti (kvadranty Pladias) pro uzemi ČR 
 ## (Vysvetleni ruznych typu scale_fill/color* dostupnych v ggplot2 -> https://stackoverflow.com/questions/70942728/understanding-color-scales-in-ggplot2) 
 
-
-# Priprava dat 
-
 # potrebne knihovny 
 library(sf)            # knihovna pro praci s prostorovymi objekty (sf)
 library(RColorBrewer)  # knihovna nabizejici palety barev
-
-kvadranty <- read_sf("./GIS_data/shapes/kvadranty_Pladias.shp")  # nacteni shp jako sf objektu
-
-
-
-# potrebne knihovny
 library(ggplot2)       # knihovna pro tvorbu map, grafů
 library(ggspatial)     # pridani meritka, smerovky do mapy
 
+#### mozna muzeme vsechny knihovny dat nahoru, at je to pohromade / stejne je tam popisek, ja to tak pouzivam radsi
 
+# gridova data CZ ---------------------------------------------------------------------------------------
+kvadranty <- read_sf("./GIS_data/shapes/kvadranty_Pladias.shp")  # nacteni shp jako sf objektu
+
+
+# Mapa poctu druhu v kvadrantech CZ ----------------------------------------------------------------------
 # Mapa poctu druhu v kvadrantech Pladias (absolutni hodnoty) -
-breaks = c(54, 150, 300, 500, 700, 900, 1200)  # nastaveni intervalu, do kterych budou data delena (scale_fill_fermenter)
+breaks = c(54, 150, 300, 500, 700, 900, 1200)  # nastaveni intervalu kategorii, do kterych budou data delena (scale_fill_fermenter)
 
 mapa_pocet_druhu_kv <- ggplot() + 
                        geom_sf(data = kvadranty,                  # sf objekt kvadranty Pladias
@@ -62,7 +59,7 @@ mapa_rezidua_kv <- ggplot() +
 ggsave(plot = mapa_rezidua_kv, width = 14, height = 9, dpi = 300, filename = "./Mapy/mapa_rezidua_kvadranty.tiff")
 
 
-
+# Znazorneni vyskytu ----------------------------------------------------------------------
 # Znazorneni vyskytu Lilium martagon v kvadrantech Pladiasu -
 
 # Priprava dat 
@@ -94,8 +91,8 @@ mapa_Lilium_martagon <- ggplot() +
 ggsave(plot = mapa_Lilium_martagon, width = 14, height = 9, dpi = 300, filename = "./Mapy/mapa_Lilium_martagon.tiff")
 
 
-
-# Mapy vyvoje dane charakteristiky (Shannon index pro Land Use) v kvadrantech Pladiasu (1850 až 2006)
+# Mapy vyvoje vybrane charakteristiky v case ----------------------------------------------------------------------
+# Shannon index pro Land Use) v kvadrantech Pladiasu (1850 až 2006)
 
 # Potrebna data
 Shannon_index <- read.csv("./data_csv/Shannon_index_LU.csv", 

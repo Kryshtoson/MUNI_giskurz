@@ -1,7 +1,6 @@
 library(sf)
 library(raster)
 library(tidyverse)
-#library(rworldmap)
 library(rnaturalearth)
 library(readxl)
 # -------------------------------------------------------------------------

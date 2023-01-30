@@ -1,9 +1,8 @@
 # Mapa s digitalnim vyskovym modelem jako podkladem
-# vegetacnimi snimky rozdelenymi podle formacni skupiny  
+# vegetacnimi snimky rozdelenymi podle formacni skupiny/ klasifikace  
 # s barvou podle prumerne indikacni hodnoty pro reakci
 
-
-# Priprava data - 
+# Priprava dat ----------------------------------------------------------------------
 
 # Potrebne knihovny
 library(sf)       # knihovna pro praci s prostorovymi objekty (sf)
@@ -11,7 +10,7 @@ library(RCzechia) # knihovna obsahujici sf objekty z ArcČR
 library(dplyr)    # knihovna pro manipulaci s daty (napr. filtrovani)
 library(raster)   # knihovna pro praci s rastry
 
-
+# Vegetacni data  ----------------------------------------------------------------------
 # Vektorova data (format shp, sf)
 # vegetacni snimky ve formatu csv
 releves <- read.csv("./data_csv/CNFD_snimky.csv", # nacteni csv souboru
@@ -26,8 +25,9 @@ releves_sf<- st_as_sf(releves,                             # prevod df snimku na
 releves_sf<- st_transform(releves_sf, 
                           crs = 32633)                     # zmena souradnicoveho systemu na WGS84/UTM33N 
 
-
+# Podkladova data ----------------------------------------------------------------------
 # data z ArcČR 
+
 # kraje
 kraje <- kraje()                                    # sf objekt kraje ČR
 jmk <- filter(kraje, 
@@ -50,7 +50,7 @@ vodni_toky_major<- filter(vodni_toky,
 vodni_toky_jmk <- st_intersection(vodni_toky_major, bb_jmk)   # orezani hlavnich rek ČR na bounding box JM kraje 
 
 
-
+# Digitalni vyskovy model DEM ----------------------------------------------------------------------
 # Rastrova data (tif)
 dem <- raster("./GIS_data/grids/dem_100.tif")   # rastr digitalniho vyskoveho modelu (rozliseni 100 x 100 m)
 dem                                             # zakladni informace o rastru (rozlisení - resolution, rozsah - extent, koordinacní system - crs)
@@ -76,8 +76,8 @@ palette_reaction <- c ("#FF0000", "#FF9933", "#FFFF33", "#99FF33", "#3399FF") # 
 
 
 
-
-# Mapa pomoci knihovny ggplot2-
+# Mapa 1 ----------------------------------------------------------------------
+# pomoci knihovny ggplot2
 library(ggplot2)    # knihovna pro tvorbu map, grafů
 library(ggspatial)  # pridani meritka, smerovky do mapy
        
@@ -101,8 +101,8 @@ mapa_symboly <- ggplot() +
                 geom_sf(data = releves_sf,             # sf objekt vegetacnich snimku
                         color = "black",               # barva obrysu
                         size = 2.25,                   # velikost symbolu  
-                        aes(shape = FSB,               # typ symbolu podle atributu FSB
-                            fill = Mean_reaction))+    # barva vyplne podle atributu prumerna i. h. pro reakci
+                        aes(shape = FSB,               # typ symbolu podle atributu FSB / formacni skupina biotopu (les, travnik..)
+                            fill = Mean_reaction))+    # barva vyplne podle atributu prumerna indikacni h. pro reakci
                             #, size = Number_of_sp ))  # velikost podle atributu poctu druhu    
                             #scale_size("Počet druhů", # nadpis legendy
                             #breaks = c(20,40,80,101), # intervaly pro velikost symbolu podle poctu druhu
@@ -139,7 +139,7 @@ mapa_symboly <- ggplot() +
 mapa_symboly
 
 
-# vytvoreni histogramu
+# vytvoreni histogramu pro pocet snimku podel gradientu reakce, vlozeni vedle mapy
 colors <- c(rep("#FF0000",1), rep("#FF9933",10), rep("#99FF33",10), rep("#3399FF", 4)) # nastaveni barev pro sloupce v histogramu
 
 legend_plot <- ggplot(releves,                           # dataframe
@@ -164,16 +164,15 @@ finalni_mapa <- mapa_symboly +
 # ulozeni mapy
 ggsave(plot = finalni_mapa, width = 14, height = 9, dpi = 300, filename = "./Mapy/mapa_symboly.tiff")  
 
+##### tady by si mohli zkusit udelat tu mapu s vetsimi symboly treba, jen z casti dat (filter)
 
 
 
 
-
-
+# Mapa 2  ----------------------------------------------------------------------
 # mapa snimku z travniku, kde jsou snimky zobrazeny jako kolacove grafy znazornujici podil x, xx, xxx charakteristik --
 
 # Priprava dat 
-
 # potrebne knihovny 
 library(sf) # knihovna pro praci s prostorovymi objekty (sf)
 

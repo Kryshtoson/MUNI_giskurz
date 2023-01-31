@@ -4,13 +4,14 @@ library(tidyverse)
 library(rnaturalearth)
 library(readxl)
 # -------------------------------------------------------------------------
-# 
+# Rastery
 # -------------------------------------------------------------------------
-# projekce
-# https://epsg.io/
+# PEGS vzorce (https://epsg.io/)
+# vlastnosti rasteru
+# projekce, transformace mezi projekcemi, rozlišení a agregování rasterů
 
-world <- ne_countries(scale = "medium", returnclass = "sf")
-dem <- raster('GIS_data/grids/dem_100.tif')
+world <- ne_countries(scale = "medium", returnclass = "sf") # rnaturalearth data
+dem <- raster('GIS_data/grids/dem_100.tif') # lokální data
 dem_wgs84 <- projectRaster(dem, crs = '+proj=longlat +datum=WGS84 +no_defs +type=crs')
 
 # plot
@@ -23,8 +24,13 @@ res(dem_1000)
 values(dem_1000)
 
 # -------------------------------------------------------------------------
-# 
+# Vektory
 # -------------------------------------------------------------------------
+# generování bodového vektoru z tabulky
+# práce s tabulkou
+# projekce, EPGS kódy
+# jednoduché zobrazení rasteru
+
 df <- read_xlsx('data_csv/CNFD-selection-2023-01-09-IA.xlsx')
 cnfd_head <- read_xlsx('data_csv/CNFD-selection-2023-01-09-IA.xlsx') %>%
   select(PlotID, ESy.v2, deg_lon, deg_lat, Temperature) %>%

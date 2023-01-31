@@ -5,6 +5,8 @@ library(readxl)
 library(sf)
 library(tidyverse)
 
+# vybrané druhy pro srování 
+
 stromy <- c('Quercus petraea agg.',
   'Quercus robur',
   'Quercus pubescens agg.',
@@ -35,25 +37,21 @@ stromy <- c('Quercus petraea agg.',
   )
 
 # funkce pro vytvoreni zkratek jmen druhu (Acer pseudoplatanus = Ace.pse)
-make_names <- function(v){
-  paste(str_sub(word(v), 1,3), 
-        str_sub(word(v, 2), 1,3), 
-        sep = '.')
+make_names <- function(v){paste(str_sub(word(v), 1,3), str_sub(word(v, 2), 1,3), sep = '.')
 }
 
 # -------------------------------------------------------------------------
 # data
 # -------------------------------------------------------------------------
-# digitalni model reliefu 100 m rozliseni
+# digitalni model reliefu 100 m rozliseni, lokální data
 dem_path <- 'GIS_data/grids/dem_100.tif'
 dem <- raster(dem_path)
 
-# hlavičky čnfd snímků
+# hlavičky čnfd snímků, lokální data
 cnfd_head <- read_xlsx('data_csv/CNFD-selection-2023-01-09-IA.xlsx')
 
-# druhová data
-# vybereme jen nektere stromy
-# koordinaty jmse pouzili k vytvoreni sf filu
+# druhová data, filterujeme jen některé druhy (viz výše)
+# koordinaty jmse pouzili k vytvoreni sf filu s atributovou tabulkou
 spe <- read_delim('woody.spp.txt') %>% filter(Species %in% stromy) %>% 
   mutate(spe_abb = make_names(Species)) %>% 
   left_join(cnfd_head %>% select(PlotID, deg_lon, deg_lat)) %>% 
@@ -74,6 +72,9 @@ spe_selected %>%
 # -------------------------------------------------------------------------
 # topografie, morfometrické parametry
 # -------------------------------------------------------------------------
+
+# TWI: velmi užitečné, poměrně komplikované 
+
 wbt_fill_single_cell_pits(
   dem = dem_path, 
   output = 'twi_meta/my_rast_filled.tif'
@@ -98,13 +99,18 @@ names(twi) <- 'twi'
 # -------------------------------------------------------------------------
 # ostatni morfometricke parametry
 # -------------------------------------------------------------------------
+# sklon svahu
 slp <- terrain(dem, 'slope', 'degrees')
+# topographical position index (takový jednodužší TWI)
 tpi <- tpi(dem, w = 3)
 names(tpi) <- 'tpi'
+# heat load index
 hli <- hli(dem)
 names(hli) <- 'hli'
+# terrain ruggedness index
 tri <- tri(dem, s = 3)
 names(tri) <- 'tri'
+# vector ruggedness measure
 vrm <- vrm(dem, s = 3)
 names(vrm) <- 'vrm'
 
@@ -131,5 +137,12 @@ dd %>% left_join(mean_EIV) %>%
   geom_text(aes(label = spe_abb))
 
 # -------------------------------------------------------------------------
-# 
+# exactextractr
 # -------------------------------------------------------------------------
+# pomocí st_buffer vytvoříme kolem bodů buffer, a tedy z nich uděláme polygony
+# pro tyto polygony extrahujeme informace z rasteru
+
+spe_selected_buffer <- st_buffer(spe_selected, 2)
+spe_selected_buffer
+exactextractr::exact_extract(dem, st_buffer(spe_selected, 2))
+exactextractr::exact_extract(dem, st_buffer(spe_selected, 2), 'mean')

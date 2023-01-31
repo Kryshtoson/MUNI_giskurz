@@ -2,13 +2,17 @@
 # vegetacnimi snimky rozdelenymi podle formacni skupiny/ klasifikace  
 # s barvou podle prumerne indikacni hodnoty pro reakci
 
-# Priprava dat ----------------------------------------------------------------------
-
 # Potrebne knihovny
 library(sf)       # knihovna pro praci s prostorovymi objekty (sf)
 library(RCzechia) # knihovna obsahujici sf objekty z ArcČR
 library(dplyr)    # knihovna pro manipulaci s daty (napr. filtrovani)
 library(raster)   # knihovna pro praci s rastry
+library(ggplot2)    # knihovna pro tvorbu map, grafů
+library(ggspatial)  # pridani meritka, smerovky do mapy
+library(ggplot2)    # knihovna pro tvorbu map, grafů
+library(scatterpie) # tvorba kolacovych grafu jako symbolu
+library(ggspatial)  # pridani meritka, smerovky do mapy
+
 
 # Vegetacni data  ----------------------------------------------------------------------
 # Vektorova data (format shp, sf)
@@ -77,10 +81,7 @@ palette_reaction <- c ("#FF0000", "#FF9933", "#FFFF33", "#99FF33", "#3399FF") # 
 
 
 # Mapa 1 ----------------------------------------------------------------------
-# pomoci knihovny ggplot2
-library(ggplot2)    # knihovna pro tvorbu map, grafů
-library(ggspatial)  # pridani meritka, smerovky do mapy
-       
+# pomoci knihovny ggplot2    
 
 # rastrova data potreba prevest na dataframe
 dem_pts <- rasterToPoints(dem_jmk1, spatial = TRUE)  # prevod rastru na body s atributem nadmorske vysky
@@ -164,17 +165,13 @@ finalni_mapa <- mapa_symboly +
 # ulozeni mapy
 ggsave(plot = finalni_mapa, width = 14, height = 9, dpi = 300, filename = "./Mapy/mapa_symboly.tiff")  
 
-##### tady by si mohli zkusit udelat tu mapu s vetsimi symboly treba, jen z casti dat (filter)
+
 
 
 
 
 # Mapa 2  ----------------------------------------------------------------------
 # mapa snimku z travniku, kde jsou snimky zobrazeny jako kolacove grafy znazornujici podil x, xx, xxx charakteristik --
-
-# Priprava dat 
-# potrebne knihovny 
-library(sf) # knihovna pro praci s prostorovymi objekty (sf)
 
 # vegetacni snimky travniku
 releves_invazni_stat <- read.csv("./data_csv/snimky_invaz_stat.csv", 
@@ -195,9 +192,6 @@ releves_invazni_stat_utm33 <- cbind(releves_invazni_stat[c(1,4:7)],releves_invaz
 
 
 # Vytvoreni mapy
-library(ggplot2)    # knihovna pro tvorbu map, grafů
-library(scatterpie) # tvorba kolacovych grafu jako symbolu
-library(ggspatial)  # pridani meritka, smerovky do mapy
 
 mapa_invaz_stat <- ggplot() + 
                    geom_raster(data = dem_df,                                    # dataframe dem

@@ -1,18 +1,17 @@
 # Mapa znazornujici pocet assesmentu ve fytochorionech -> nepravý kartogram -
 
-# Priprava dat ----------------------------------------------------------------------
-
 # potrebne knihovny 
 library(sf) # knihovna pro praci s prostorovymi objekty (sf)
+library(ggplot2)     # knihovna pro tvorbu map, grafů
+library(ggspatial)   # pridani meritka, smerovky do mapy
+library(scatterpie)  # tvorba kolacovych grafu jako symbolu
 
+
+# priprava dat -----------------------------------------------------------------------------
 fytochoriony <- read_sf("./GIS_data/shapes/Regiony_wgs2.shp") # nacteni shp jako sf objektu 
 # v tomto priprade pouzity regiony vytvorene pro mapovani expanznich druhu
 
 # Mapa pomoci ggplot2 ----------------------------------------------------------------------
-# potrebne knihovny
-library(ggplot2)    # knihovna pro tvorbu map, grafů
-library(ggspatial)  # pridani meritka, smerovky do mapy
-
 
 mapa_fytochoriony <- ggplot() + 
                      geom_sf(data = fytochoriony,                # sf objekt fytochoriony
@@ -73,14 +72,6 @@ st_geometry(kraje_data_utm33) <- NULL                           # odstraneni geo
 
 
 # mapa pomoci ggplot 
-
-# potrebne knihovny 
-library(ggplot2)     # knihovna pro tvorbu map, grafů
-library(ggspatial)   # pridani meritka, smerovky do mapy
-library(scatterpie)  # tvorba kolacovych grafu jako symbolu
-
-
-
 
 mapa_kartodiagram <- ggplot() +
                      geom_sf(data = kraje_utm33,                           # sf objekt kraju 

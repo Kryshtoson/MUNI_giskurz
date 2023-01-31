@@ -7,7 +7,6 @@ library(RColorBrewer)  # knihovna nabizejici palety barev
 library(ggplot2)       # knihovna pro tvorbu map, grafů
 library(ggspatial)     # pridani meritka, smerovky do mapy
 
-#### mozna muzeme vsechny knihovny dat nahoru, at je to pohromade / stejne je tam popisek, ja to tak pouzivam radsi
 
 # gridova data CZ ---------------------------------------------------------------------------------------
 kvadranty <- read_sf("./GIS_data/shapes/kvadranty_Pladias.shp")  # nacteni shp jako sf objektu

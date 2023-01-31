@@ -7,11 +7,7 @@ library(dplyr)    # knihovna pro manipulaci s daty (napr. filtrovani)
 
 # Nacteni vegetacnich dat ----------------------------------------------------------------------
 # Vektorova data (format shp, sf)
-# vegetacni snimky ve formatu csv, souradnice, reakce, pocet druhu
-
-#### dotaz odkud je reakce, zdroj?
-#### co je FSB ?
-#### slo by zmenit vegetacni snimek aby nebyl hacek, dela mi problem ve vysledne mape, popripade jak osetrit, aby se tisklo spravne?
+# vegetacni snimky ve formatu csv, souradnice, Ellenbergovska indikacni hodnota pro reakci, FSB - formacni skupina biotopu (les, travnik...), pocet druhu
 
 releves <- read.csv("./data_csv/CNFD_snimky.csv",  # nacteni csv souboru 
                     header = TRUE,                 # prvni radek jako hlavicka 
@@ -69,7 +65,7 @@ mapa_zajmove_uzemi <- ggplot() +
                               size = 1.2,                            # sirka obrysu
                               aes(shape = NAZ_CZNUTS3)) +            # automaticka tvorba legendy            
                       geom_sf(data = releves_sf,                     # vlozeni sf objektu
-                              shape = 21,                            # vyber symbolu
+                              shape = 21,                            # vyber symbolu, viz prezentace
                               colour = "black",                      # barva obrysu
                               fill = "white",                        # vypln symbolu
                               aes(size = Object)) +                  # automaticka tvroba legendy
@@ -92,8 +88,6 @@ mapa_zajmove_uzemi <- ggplot() +
           
 mapa_zajmove_uzemi        
 
-#### asi by bylo dobre zminit, kde se daji najit symboly atd
-#### pripadne by chtelo vymyslet, co by mohli primo zkusit vsechno zmenit
 
 # Mapa znazornujici polohu zajmoveho uzemi v ramci ČR 
 
@@ -101,7 +95,7 @@ mapa_zajmove_uzemi
 bb_releves <- st_bbox (releves_sf)  # vrcholy hranicniho obdelniku kolem snimku
 bb_releves <- st_as_sfc(bb_releves) # vytvoreni prostoroveho objektu z hranicniho obdelniku (knihovna sf)
 
-mapa_ČR <- ggplot() + 
+mapa_CZ <- ggplot() + 
            geom_sf(data = kraje,        # sf objekt kraje ČR
                    fill = "#FFFFCC") +  # vypln (HEX) 
            geom_sf(data = jmk,          # sf objekt JM kraj 
@@ -119,12 +113,11 @@ mapa_ČR <- ggplot() +
                    size = 0.8) +        # sirka obrysu
            theme_void()                 # odstraneni souradnicove site z mapoveho pole
 
-##### navrhuju prejmenovat na mapa_CZ aby tam nebyl ten hacek
 
-# vlozeni prehledove mapy (mapa_ČR) do mapoveho pole mapy zajmoveho uzemi (mapa_zajmove_uzemi)
+# vlozeni prehledove mapy (mapa_CZ) do mapoveho pole mapy zajmoveho uzemi (mapa_zajmove_uzemi)
 finalni_mapa <-  ggdraw() +
                  draw_plot(mapa_zajmove_uzemi) + # hlavni mapove pole
-                 draw_plot(mapa_ČR,              # prehledova mapa
+                 draw_plot(mapa_CZ,              # prehledova mapa
                            x = 0.02, 
                            y = 0.80,             # x, y - poloha mapy v mapovem poli
                            width = 0.22, 

@@ -4,6 +4,16 @@
 library(sf)       # knihovna pro praci s prostorovymi objekty (sf) 
 library(RCzechia) # knihovna obsahujici sf objekty z ArcČR
 library(dplyr)    # knihovna pro manipulaci s daty (napr. filtrovani)
+library(basemaps)  # knihovna pro pristup k otevrenym zdrojum podkladovych map (OSM, ESRI,...)
+library(ggplot2)   # knihovna pro tvorbu map, grafů
+library(ggspatial) # pridani meritka, smerovky do mapy
+library(sf)
+library(cowplot)   # knihovna pro vlozeni prehledove mapky
+
+## nabidka dostupnych mapovych sluzeb a typu map v knihovne basemaps
+get_maptypes()    
+
+
 
 # Nacteni vegetacnich dat ----------------------------------------------------------------------
 # Vektorova data (format shp, sf)
@@ -41,18 +51,6 @@ bb_jmk_mercator <- st_transform(bb_jmk,
 
 
 # Mapa pomoci knihovny ggplot2 ----------------------------------------------------------------------
-#knihovny
-library(basemaps)  # knihovna pro pristup k otevrenym zdrojum podkladovych map (OSM, ESRI,...)
-library(ggplot2)   # knihovna pro tvorbu map, grafů
-library(ggspatial) # pridani meritka, smerovky do mapy
-library(sf)
-library(cowplot)   # knihovna pro vlozeni prehledove mapky
-
-
-get_maptypes()     # nabidka dostupnych mapovych sluzeb a typu map v knihovne basemaps
-
-
-
 # Mapa zajmoveho uzemi s vyznacenim kraje a vegetacnimi snimky na podkladove mape z open street maps (osm)
 mapa_zajmove_uzemi <- ggplot() + 
                       basemap_gglayer(bb_jmk_mercator,

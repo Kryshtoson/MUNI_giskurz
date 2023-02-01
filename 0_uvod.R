@@ -39,10 +39,23 @@ cnfd_head <- read_xlsx('data_csv/CNFD-selection-2023-01-09-IA.xlsx') %>%
 
 cnfd_head %>% st_transform(32633)
 
-ggplot() +
+finalni_mapa<- ggplot() +
   geom_sf(data = world) +
   geom_sf(data = cnfd_head, aes(colour = Temperature), size = 2) +
   scale_colour_viridis_c(option = 'A') + 
   coord_sf(xlim = c(10, 20), ylim = c(47, 52), expand = FALSE) +
   theme_bw()
+
+finalni_mapa
+
+# ulozeni mapy do slozky Mapy, nastaveni velikosti
+ggsave(plot = finalni_mapa, width = 8, height = 7.2 , dpi = 300, filename = "./Mapy/mapa_zajmove_uzemi.tiff")  
+
+# -------------------------------------------------------------------------
+# polygony z Google earth
+# -------------------------------------------------------------------------
+
+read_sf('GIS_data\\Palava.kml') %>% 
+  ggplot() + 
+  geom_sf()
 
